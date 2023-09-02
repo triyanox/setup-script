@@ -85,4 +85,5 @@ if __name__ == "__main__":
     builder.copy_file("starship.toml", "~/.config/starship.toml")
     builder.copy_file("config.fish", "~/.config/fish/config.fish")
     builder.prompt_user()
+    builder.run_command("fish")
     builder.execute()
