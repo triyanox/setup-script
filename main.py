@@ -10,11 +10,8 @@ class SetupBuilder:
         self.file_copying_steps = []
 
     def run_command(self, command):
-        try:
-            subprocess.run(command, shell=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Error executing command: {e}")
-            exit(1)
+        self.installation_steps.append(command)
+        return self
 
     def install_package(self, package_name):
         self.installation_steps.append(f"brew install {package_name}")
@@ -41,7 +38,7 @@ class SetupBuilder:
                 '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
 
         for step in self.installation_steps:
-            self.run_command(step)
+            subprocess.run(step, shell=True)
 
         for source, destination in self.file_copying_steps:
             try:
@@ -49,6 +46,9 @@ class SetupBuilder:
             except FileNotFoundError:
                 print(f"File not found: {source}")
                 exit(1)
+
+        self.run_command("fish")
+        self.prompt_user()
 
         print("Development environment setup completed.")
 
@@ -58,15 +58,10 @@ if __name__ == "__main__":
     builder.install_package("git")
     builder.install_package("gh")
     builder.install_package("fish")
-    builder.run_command("fish")
     builder.install_package("exa")
     builder.copy_file("starship.toml", "~/.config/starship.toml")
     builder.copy_file("config.fish", "~/.config/fish/config.fish")
-    builder.run_command("curl -sS https://starship.rs/install.sh | sh")
-    builder.run_command(
-        "curl - o - https: // raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash")
-    builder.run_command(
-        "wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash")
+    builder.install_package("nvm")
     builder.run_command("nvm install 14")
     builder.run_command("nvm install 16")
     builder.run_command("nvm install 18")
@@ -85,5 +80,4 @@ if __name__ == "__main__":
     builder.install_package("azure-cli")
     builder.run_command(
         "cat extensions.txt | xargs -L 1 code --install-extension")
-    builder.prompt_user()
     builder.execute()
