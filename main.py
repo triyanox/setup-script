@@ -58,7 +58,10 @@ if __name__ == "__main__":
     builder.install_package("git")
     builder.install_package("gh")
     builder.install_package("fish")
+    builder.run_command("fish")
     builder.install_package("exa")
+    builder.copy_file("starship.toml", "~/.config/starship.toml")
+    builder.copy_file("config.fish", "~/.config/fish/config.fish")
     builder.run_command("curl -sS https://starship.rs/install.sh | sh")
     builder.run_command(
         "curl - o - https: // raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash")
@@ -82,8 +85,5 @@ if __name__ == "__main__":
     builder.install_package("azure-cli")
     builder.run_command(
         "cat extensions.txt | xargs -L 1 code --install-extension")
-    builder.copy_file("starship.toml", "~/.config/starship.toml")
-    builder.copy_file("config.fish", "~/.config/fish/config.fish")
     builder.prompt_user()
-    builder.run_command("fish")
     builder.execute()
